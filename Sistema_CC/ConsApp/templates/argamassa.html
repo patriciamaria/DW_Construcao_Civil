@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block conteudo %}
+
+<body>
+  <div class="py-5 text-center bg-ligth">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h1 class="mb-4 text-white">ARGAMASSA</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 col-6 p-1">
+          <a href="#">
+            <img class="d-block img-fluid" src="/static/img/argamassa/1fachadas.jpg"> </a>
+			<p><a class="btn btn-lg btn-primary" href="{{url_for('cadastrarreserva')}}" role="button">Reserve!</a></p>
+        </div>
+        <div class="col-md-3 col-6 p-1">
+          <a href="#">
+            <img class="d-block img-fluid" src="/static/img/argamassa/2interno.jpg"> </a>
+			<p><a class="btn btn-lg btn-primary" href="{{url_for('cadastrarreserva')}}" role="button">Reserve!</a></p>
+        </div>
+        <div class="col-md-3 col-6 p-1">
+          <a href="#">
+            <img class="d-block img-fluid" src="/static/img/argamassa/3pastilha.jpg"> </a>
+			<p><a class="btn btn-lg btn-primary" href="{{url_for('cadastrarreserva')}}" role="button">Reserve!</a></p>
+        </div>
+        <div class="col-md-3 col-6 p-1">
+          <a href="#">
+            <img class="d-block img-fluid" src="/static/img/argamassa/4varandas.jpg"> </a>
+			<p><a class="btn btn-lg btn-primary" href="{{url_for('cadastrarreserva')}}" role="button">Reserve!</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
