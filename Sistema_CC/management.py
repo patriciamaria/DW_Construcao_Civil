@@ -177,8 +177,24 @@ def obter_categoria(id):
 
 
 #CRUD ENTIDADE PRODUTO
-def inserir_produto(nomep):
-	produto = Produto(nomep)
+def obter_produtos():
+	prods = Produto.query.all()
+	
+	lista_produtos = list()
+
+	if prods is not None:
+		for item in prods:
+			if item.endereco is not None:
+				lista_produtos.append({'Id':item.id, 'Nome':item.nomep, 'Tipo':item.tipo, 'Descrição':item.descricao,})
+			else:
+				lista_produtos.append({'Id':item.id, 'Nome':item.nomep, 'Tipo':item.tipo, 'Descrição':item.descricao,})	
+
+		return lista_produtos
+	else:
+		return None
+
+def inserir_produto(nomep, tipo, descricao):
+	produto = Produto(nomep, tipo, descricao)
 	db.session.add(produto)
 	db.session.commit()
 	return produto
@@ -209,6 +225,22 @@ def obter_produto(id):
 		return None
 
 #CRUD ENTIDADE RESERVA
+def obter_reservas():
+	users = Reserva.query.all()
+	
+	lista_reservas = list()
+
+	if users is not None:
+		for item in users:
+			if item.endereco is not None:
+				lista_reservas.append({'Id':item.id, 'Usuário':item.usuario, 'Descrição do Produto':item.descricaopro,})
+			else:
+				lista_reservas.append({'Id':item.id, 'Usuário':item.usuario, 'Descrição do Produto':item.descricaopro,})	
+
+		return lista_reservas
+	else:
+		return None
+
 def inserir_reserva(des_prod):
 	reserva = reserva(des_prod)
 	db.session.add(reserva)

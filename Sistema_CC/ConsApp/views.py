@@ -67,7 +67,7 @@ def excluirUsuario(index):
 	return redirect(url_for('homepage'))
 
 #CADASTRAR PRODUTO
-@app.route('/cadastrarproduto')
+'''@app.route('/cadastrarproduto')
 def cadastrarproduto():
 	if 'usuario' in session:
 		return render_template('cadastrarproduto.html', usuario = session['usuario'])
@@ -77,16 +77,17 @@ def cadastrarproduto():
 def cadastrarreserva():
 	if 'usuario' in session:
 		return render_template('cadastrarreserva.html', usuario = session['usuario'])
-	return redirect(url_for('homepage'))
+	return redirect(url_for('homepage'))'''
 	
 #FALTA CORREÇÃO
-'''@app.route('/cadastrarproduto', methods=['GET', 'POST'])
+@app.route('/cadastrarproduto', methods=['GET', 'POST'])
 def cadastrarproduto():
 	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
 		if request.method == 'POST':
-			nome = request.form['nome']
+			nome = request.form['nomep']
 			tipo = request.form['tipo']
-			descricao = request.form['descricao']				
+			descricao = request.form['descricao']
+			prods = inserir_produto(nome, tipo, descricao)				
 			flash('Produto cadastrado com sucesso!')
 		return render_template('cadastrarproduto.html', usuario = session['usuario'], lista_produtos = obter_produtos(), Alterar = 'alterarProduto', Excluir = 'excluirProduto')
 	return redirect(url_for('homepage'))
@@ -94,13 +95,13 @@ def cadastrarproduto():
 
 @app.route('/cadastrarreserva', methods=['GET', 'POST'])
 def cadastrarreserva():
-	if 'usuario' in session and session['usuario']['Tipo'] == 'A' and session['usuario']['Tipo'] == 'U':
+	if 'usuario' in session and (session['usuario']['Tipo'] == 'A' or session['usuario']['Tipo'] == 'U'):
 		if request.method == 'POST':
 			usuario = request.form['usuario']
 			descricaopro = request.form['descricaopro']			
 			flash('Reserva cadastrada com sucesso!')
-		return render_template('cadastrarproduto.html', usuario = session['usuario'], lista_reservas = reservas(), Alterar = 'alterarReserva', Excluir = 'excluirReserva')
-	return redirect(url_for('homepage'))'''
+		return render_template('cadastrarreserva.html', usuario = session['usuario'], lista_reservas = obter_reservas(), Alterar = 'alterarReserva', Excluir = 'excluirReserva')
+	return redirect(url_for('homepage'))
 
 #ESTOQUE
 @app.route('/estoque')
