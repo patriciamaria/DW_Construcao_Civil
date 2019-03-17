@@ -13,9 +13,9 @@
                 {% for c in l.keys(): %}
               <th>{{c}}</th>
                 {% endfor %}
-                <!--{% if not Operacao: %}-->
+                {% if not Operacao: %}
               <th>Alterar</th>
-                <!--{% endif %}-->
+                {% endif %}
               <th>Excluir</th>
               {% endif %} 
             {% endfor %}
@@ -25,11 +25,11 @@
               {% for c in l.keys(): %}
               <td>{{l[c]}}</td>
               {% endfor %}
-              <!--{% if not Operacao: %}-->
+              {% if not Operacao: %}
               <td>
-                <a href='#'><button type="button" class="btn btn-warning btn-sm">Alterar</button></a>
+                <a href="{{url_for(Alterar, index=l.Id)}}"><button type="button" class="btn btn-warning btn-sm">Alterar</button></a>
               </td>
-              <!--{% endif %}-->
+              {% endif %}
               <td>
                 <a href="{{url_for(Excluir, index=l.Id)}}"><button type="button" class="btn btn-danger btn-sm">Excluir</button></a>
               </td>

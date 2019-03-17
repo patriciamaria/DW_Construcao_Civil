@@ -38,7 +38,7 @@ def logout():
 	session.pop('usuario', None)
 	return redirect(url_for('homepage'))
 
-
+#CADASTRO DE USUÁRIO
 @app.route('/cadastrarusuario', methods=['GET', 'POST'])
 def cadastrarusuario():
 	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
@@ -58,6 +58,7 @@ def cadastrarusuario():
 		return render_template('cadastrarusuario.html', usuario = session['usuario'], lista_usuarios = obter_usuarios(), Alterar = 'alterarUsuario', Excluir = 'excluirUsuario')
 	return redirect(url_for('homepage'))
 
+#EXCLUIR USUÁRIO
 @app.route('/cadastrarusuario/excluir/<int:index>')
 def excluirUsuario(index):
 	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
@@ -66,41 +67,68 @@ def excluirUsuario(index):
 		return redirect(url_for('cadastrarusuario'))
 	return redirect(url_for('homepage'))
 
-#CADASTRAR PRODUTO
-'''@app.route('/cadastrarproduto')
-def cadastrarproduto():
-	if 'usuario' in session:
-		return render_template('cadastrarproduto.html', usuario = session['usuario'])
+#ALTERAR USUÁRIO (NÃO ESTÁ FUNCIONANDO)
+@app.route('/cadastrarusuario/alterar/<int:index>', methods=['GET', 'POST'])
+def alterarUsuario(index):
+	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
+		if request.method == 'POST':
+			nome = request.form['nome']
+			telefone = request.form['telefone']
+			email = request.form['email']
+			senha = request.form['senha']
+			rua = request.form['rua']
+			cep = request.form['cep']
+			cidade = request.form['cidade']
+			tipo = request.form['tipo']				
+			user.atualizar_usuario(index, nome, telefone, email, senha, tipo)
+			endereco.atualizar_endereco(index, cep, cidade, rua)
+			vincular_user_adress(user.id, endereco.id)
+			flash('Registro alterado com sucesso!')		
+			usuario = models.Usuario.query.get(index)	
+		return render_template('cadastrarusuario.html', usuario = session['usuario'], lista_usuarios = obter_usuarios(), Alterar = 'alterarUsuario', Excluir = 'excluirUsuario')
 	return redirect(url_for('homepage'))
 
-@app.route('/cadastrarreserva')
-def cadastrarreserva():
-	if 'usuario' in session:
-		return render_template('cadastrarreserva.html', usuario = session['usuario'])
-	return redirect(url_for('homepage'))'''
-	
-#FALTA CORREÇÃO
+#CADASTRAR PRODUTO (NÃO ESTÁ FUNCIONANDO)
 @app.route('/cadastrarproduto', methods=['GET', 'POST'])
 def cadastrarproduto():
 	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
 		if request.method == 'POST':
 			nome = request.form['nomep']
 			tipo = request.form['tipo']
-			descricao = request.form['descricao']
-			prods = inserir_produto(nome, tipo, descricao)				
+			descricao = request.form['des_prod']
+			produto = inserir_produto(nome, tipo, descricao)				
 			flash('Produto cadastrado com sucesso!')
 		return render_template('cadastrarproduto.html', usuario = session['usuario'], lista_produtos = obter_produtos(), Alterar = 'alterarProduto', Excluir = 'excluirProduto')
 	return redirect(url_for('homepage'))
 
+#EXCLUIR PRODUTO
+@app.route('/cadastrarproduto/excluir/<int:index>')
+def excluirProduto(index):
+	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
+		produto = deletar_produto(index)
+		flash('Produto removido com sucesso!')
+		return redirect(url_for('cadastrarproduto'))
+	return redirect(url_for('homepage'))
 
+#CADASTRAR RESERVA
 @app.route('/cadastrarreserva', methods=['GET', 'POST'])
 def cadastrarreserva():
 	if 'usuario' in session and (session['usuario']['Tipo'] == 'A' or session['usuario']['Tipo'] == 'U'):
 		if request.method == 'POST':
 			usuario = request.form['usuario']
-			descricaopro = request.form['descricaopro']			
+			descricaopro = request.form['descricaopro']	
+			reserva = inserir_reserva(des_prod)		
 			flash('Reserva cadastrada com sucesso!')
 		return render_template('cadastrarreserva.html', usuario = session['usuario'], lista_reservas = obter_reservas(), Alterar = 'alterarReserva', Excluir = 'excluirReserva')
+	return redirect(url_for('homepage'))
+
+#EXCLUIR RESERVA
+@app.route('/cadastrarreserva/excluir/<int:index>')
+def excluirReserva(index):
+	if 'usuario' in session and (session['usuario']['Tipo'] == 'A' or session['usuario']['Tipo'] == 'U'):
+		reserva = deletar_reserva(index)
+		flash('Reserva removida com sucesso!')
+		return redirect(url_for('cadastrarreserva'))
 	return redirect(url_for('homepage'))
 
 #ESTOQUE
