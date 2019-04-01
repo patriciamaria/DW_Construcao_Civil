@@ -93,10 +93,10 @@ def alterarUsuario(index):
 def cadastrarproduto():
 	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
 		if request.method == 'POST':
-			nome = request.form['nomep']
-			tipo = request.form['tipo']
-			descricao = request.form['des_prod']
-			produto = inserir_produto(nome, tipo, descricao)				
+			nomep = request.form['nomep']
+			tipop = request.form['tipop']
+			descricaop = request.form['descricaop']
+			produto = inserir_produto(nomep, tipop, descricaop)				
 			flash('Produto cadastrado com sucesso!')
 		return render_template('cadastrarproduto.html', usuario = session['usuario'], lista_produtos = obter_produtos(), Alterar = 'alterarProduto', Excluir = 'excluirProduto')
 	return redirect(url_for('homepage'))
@@ -117,7 +117,7 @@ def cadastrarreserva():
 		if request.method == 'POST':
 			usuario = request.form['usuario']
 			descricaopro = request.form['descricaopro']	
-			reserva = inserir_reserva(des_prod)		
+			reserva = inserir_reserva(descricaopro)		
 			flash('Reserva cadastrada com sucesso!')
 		return render_template('cadastrarreserva.html', usuario = session['usuario'], lista_reservas = obter_reservas(), Alterar = 'alterarReserva', Excluir = 'excluirReserva')
 	return redirect(url_for('homepage'))

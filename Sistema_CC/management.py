@@ -185,16 +185,16 @@ def obter_produtos():
 	if prods is not None:
 		for item in prods:
 			if item.endereco is not None:
-				lista_produtos.append({'Id':item.id, 'Nome':item.nomep, 'Tipo':item.tipo, 'Descrição':item.descricao,})
+				lista_produtos.append({'Id':item.id, 'Nome':item.nomep, 'Tipo':item.tipop, 'Descrição':item.descricaop,})
 			else:
-				lista_produtos.append({'Id':item.id, 'Nome':item.nomep, 'Tipo':item.tipo, 'Descrição':item.descricao,})	
+				lista_produtos.append({'Id':item.id, 'Nome':item.nomep, 'Tipo':item.tipop, 'Descrição':item.descricaop,})	
 
 		return lista_produtos
 	else:
 		return None
 
-def inserir_produto(nomep, tipo, descricao):
-	produto = Produto(nomep, tipo, descricao)
+def inserir_produto(nomep, tipop, descricaop):
+	produto = Produto(nomep, tipop, descricaop)
 	db.session.add(produto)
 	db.session.commit()
 	return produto
@@ -241,16 +241,16 @@ def obter_reservas():
 	else:
 		return None
 
-def inserir_reserva(des_prod):
-	reserva = reserva(des_prod)
+def inserir_reserva(descricaopro):
+	reserva = reserva(descricaopro)
 	db.session.add(reserva)
 	db.session.commit()
 	return reserva
 
-def atualizar_reserva(id, des_prod):
+def atualizar_reserva(id, descricaopro):
 	reserva = Reserva.query.get(id)
 	if reserva is not None:
-		reserva.des_prod = des_prod
+		reserva.descricaopro = descricaopro
 		db.session.commit()
 		return reserva
 	else:
