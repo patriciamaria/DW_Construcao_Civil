@@ -38,78 +38,107 @@ def logout():
 	session.pop('usuario', None)
 	return redirect(url_for('homepage'))
 
+def isAdmin():
+	return 'usuario' in session and session['usuario']['Tipo'] == 'A'
+
 #CADASTRO DE USUÁRIO
 @app.route('/cadastrarusuario', methods=['GET', 'POST'])
 def cadastrarusuario():
-	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
-		if request.method == 'POST':
-			nome = request.form['nome']
-			telefone = request.form['telefone']
-			email = request.form['email']
-			senha = request.form['senha']
-			rua = request.form['rua']
-			cep = request.form['cep']
-			cidade = request.form['cidade']
-			tipo = request.form['tipo']
-			user = inserir_usuario(nome, telefone, email, senha, tipo)
-			endereco = inserir_endereco(cep, cidade, rua)
-			vincular_user_adress(user.id, endereco.id)
-			flash('Usuário cadastrado com sucesso!')
-		return render_template('cadastrarusuario.html', usuario = session['usuario'], lista_usuarios = obter_usuarios(), Alterar = 'alterarUsuario', Excluir = 'excluirUsuario')
-	return redirect(url_for('homepage'))
+	if not isAdmin():
+		return redirect(url_for('homepage'))
+	
+	user = Usuario('','','','','')
+	address = Endereco('', '', '')
+	
+	if request.method == 'POST':
+		nome = request.form['nome']
+		telefone = request.form['telefone']
+		email = request.form['email']
+		senha = request.form['senha']
+
+		rua = request.form['rua']
+		cep = request.form['cep']
+		cidade = request.form['cidade']
+		
+		tipo = request.form['tipo']
+		
+		user = inserir_usuario(nome, telefone, email, senha, tipo)
+		endereco = inserir_endereco(cep, cidade, rua)
+		vincular_user_adress(user.id, endereco.id)
+		
+		flash('Usuário cadastrado com sucesso!')
+		user = models.Usuario.query.get(user.id)
+	
+	return render_template('cadastrarusuario.html', u=user, a=address, lista_usuarios = obter_usuarios(), Alterar = 'alterarUsuario', Excluir = 'excluirUsuario')
+	
 
 #EXCLUIR USUÁRIO
 @app.route('/cadastrarusuario/excluir/<int:index>')
 def excluirUsuario(index):
-	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
-		user = deletar_usuario(index)
+	if not isAdmin():
+		return redirect(url_for('homepage'))
+	
+	if deletar_usuario(index) is not None:
 		flash('Usuário removido com sucesso!')
-		return redirect(url_for('cadastrarusuario'))
-	return redirect(url_for('homepage'))
-
-#ALTERAR USUÁRIO (NÃO ESTÁ FUNCIONANDO)
+	else:
+		flash('Erro!')
+	return redirect(url_for('cadastrarusuario'))
+	
+#ALTERAR USUÁRIO
 @app.route('/cadastrarusuario/alterar/<int:index>', methods=['GET', 'POST'])
 def alterarUsuario(index):
-	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
-		if request.method == 'POST':
-			nome = request.form['nome']
-			telefone = request.form['telefone']
-			email = request.form['email']
-			senha = request.form['senha']
-			rua = request.form['rua']
-			cep = request.form['cep']
-			cidade = request.form['cidade']
-			tipo = request.form['tipo']				
-			user.atualizar_usuario(index, nome, telefone, email, senha, tipo)
-			endereco.atualizar_endereco(index, cep, cidade, rua)
-			vincular_user_adress(user.id, endereco.id)
-			flash('Registro alterado com sucesso!')		
-			usuario = models.Usuario.query.get(index)	
-		return render_template('cadastrarusuario.html', usuario = session['usuario'], lista_usuarios = obter_usuarios(), Alterar = 'alterarUsuario', Excluir = 'excluirUsuario')
-	return redirect(url_for('homepage'))
+	if not isAdmin():
+		return redirect(url_for('homepage'))
 
+	user = obter_usuario(index)
+	address = obter_endereco(user.id_endereco)
+	
+	if request.method == 'POST':
+		nome = request.form['nome']
+		telefone = request.form['telefone']
+		email = request.form['email']
+		senha = request.form['senha']
+		
+		rua = request.form['rua']
+		cep = request.form['cep']
+		cidade = request.form['cidade']
+		
+		tipo = request.form['tipo']		
+		
+		user = atualizar_usuario(index, nome, telefone, email, senha, tipo)
+
+		endereco = atualizar_endereco(user.id_endereco, cep, cidade, rua)
+		vincular_user_adress(user.id, endereco.id)
+
+		flash('Registro alterado com sucesso!')		
+		user = models.Usuario.query.get(index)	
+
+	return render_template('cadastrarusuario.html', u=user, a=address, lista_usuarios = obter_usuarios(), Alterar = 'alterarUsuario', Excluir = 'excluirUsuario')
+	
 #CADASTRAR PRODUTO (NÃO ESTÁ FUNCIONANDO)
 @app.route('/cadastrarproduto', methods=['GET', 'POST'])
 def cadastrarproduto():
-	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
-		if request.method == 'POST':
-			nomep = request.form['nomep']
-			tipop = request.form['tipop']
-			descricaop = request.form['descricaop']
-			produto = inserir_produto(nomep, tipop, descricaop)				
-			flash('Produto cadastrado com sucesso!')
-		return render_template('cadastrarproduto.html', usuario = session['usuario'], lista_produtos = obter_produtos(), Alterar = 'alterarProduto', Excluir = 'excluirProduto')
-	return redirect(url_for('homepage'))
-
+	if not isAdmin():
+		return redirect(url_for('homepage'))
+	
+	if request.method == 'POST':
+		nomep = request.form['nomep']
+		tipop = request.form['tipop']
+		descricaop = request.form['descricaop']
+		produto = inserir_produto(nomep, tipop, descricaop)				
+		flash('Produto cadastrado com sucesso!')
+	return render_template('cadastrarproduto.html', usuario = session['usuario'], lista_produtos = obter_produtos(), Alterar = 'alterarProduto', Excluir = 'excluirProduto')
+	
 #EXCLUIR PRODUTO
 @app.route('/cadastrarproduto/excluir/<int:index>')
 def excluirProduto(index):
-	if 'usuario' in session and session['usuario']['Tipo'] == 'A':
-		produto = deletar_produto(index)
-		flash('Produto removido com sucesso!')
-		return redirect(url_for('cadastrarproduto'))
-	return redirect(url_for('homepage'))
-
+	if not isAdmin():
+		return redirect(url_for('homepage'))
+	
+	produto = deletar_produto(index)
+	flash('Produto removido com sucesso!')
+	return redirect(url_for('cadastrarproduto'))
+	
 #CADASTRAR RESERVA
 @app.route('/cadastrarreserva', methods=['GET', 'POST'])
 def cadastrarreserva():

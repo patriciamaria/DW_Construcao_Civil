@@ -92,6 +92,7 @@ def atualizar_usuario(id, nome, telefone, email, senha, tipo):
 		user.senha = senha
 		user.tipo = tipo
 		db.session.commit()
+		return user
 	else:
 		return None
 
